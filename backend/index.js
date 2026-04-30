@@ -30,18 +30,26 @@ app.get("/districts/:stateId", async (req, res) => {
 });
 
 // ===== VILLAGES BY DISTRICT =====
-app.get("/villages/:districtId", async (req, res) => {
-  const result = await pool.query(`
-    SELECT v.name AS village
-    FROM village v
-    JOIN subdistrict sd ON v.subdistrict_id = sd.id
-    WHERE sd.district_id = $1
-    LIMIT 100
-  `, [req.params.districtId]);
+app.get("/villages", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT 
+        v.name AS village,
+        d.name AS district,
+        s.name AS state
+      FROM village v
+      JOIN subdistrict sd ON v.subdistrict_id = sd.id
+      JOIN district d ON sd.district_id = d.id
+      JOIN state s ON d.state_id = s.id
+      LIMIT 100;
+    `);
 
-  res.json(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching villages");
+  }
 });
-
 // ===== SEARCH =====
 app.get("/search", async (req, res) => {
   const q = req.query.q;
