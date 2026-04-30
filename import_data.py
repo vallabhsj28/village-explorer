@@ -5,11 +5,7 @@ print("FILES FOUND:", os.listdir("data"))
 
 # DB CONNECTION
 conn = psycopg2.connect(
-    dbname="village_api",
-    user="postgres",
-    password="2486",
-    host="localhost",
-    port="5432"
+    "postgresql://neondb_owner:npg_QqdbR2EKAw1H@ep-bold-bonus-an2prq1w-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require"
 )
 cur = conn.cursor()
 

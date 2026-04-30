@@ -51,17 +51,19 @@ app.get("/villages", async (req, res) => {
   }
 });
 // ===== SEARCH =====
-app.get("/search", async (req, res) => {
-  const q = req.query.q;
+app.get("/villages", async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT name AS village
+      FROM village
+      LIMIT 100;
+    `);
 
-  const result = await pool.query(`
-    SELECT name AS village
-    FROM village
-    WHERE name ILIKE $1
-    LIMIT 50
-  `, [`%${q}%`]);
-
-  res.json(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching villages");
+  }
 });
 
 // root test route
